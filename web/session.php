@@ -237,7 +237,7 @@ if (isset($sids[0])) {
 <?php require("./map_providers.php"); ?>
     <!-- slider -->
     <script>
-      const jsTimeMap = [<?php echo $itime; ?>].reverse(); //Session time array, reversed for silder
+      /*const */jsTimeMap = [<?php echo $itime; ?>].reverse(); //Session time array, reversed for silder
       var minTimeStart = [<?php echo $mintimev; ?>];
       var maxTimeEnd = [<?php echo $maxtimev; ?>];
       var TimeStartv = [<?php echo $timestartval; ?>]; 

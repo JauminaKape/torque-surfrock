@@ -152,6 +152,17 @@ function doPlot(position) {
         }
     });
     chartTooltip();
+    //Trim by plot Select
+    $("#placeholder").bind("plotselected", (evt,range)=>{
+        const [a,b] = [jsTimeMap.findIndex(e=>e>=range.xaxis.from),jsTimeMap.findIndex(e=>e>=range.xaxis.to)];
+        $("#slider-range11").slider('values',0,a);
+        $("#slider-range11").slider('values',1,b);
+        $( "#slider-time" ).val( (new Date(jsTimeMap[a])).toLocaleTimeString() + " - " + (new Date(jsTimeMap[b])).toLocaleTimeString());
+        chartUpdRange(jsTimeMap.length-b-1,jsTimeMap.length-a-1);
+        mapUpdRange(jsTimeMap.length-b-1,jsTimeMap.length-a-1);
+        plot.clearSelection();
+    });
+    //End Trim by plot Select
 }
 
 updCharts = ()=>{
@@ -590,6 +601,7 @@ initSlider = (jsTimeMap,minTimeStart,maxTimeEnd,timestartval,timeendval)=>{
 //CSV Import
 initImportCSV = () => {
     const tempSlider = a=>{
+        jsTimeMap = [...a];
         $( "#slider-range11").off( "slidechange"); //this is to avoid 2 listeners
         initSlider(a,[a[0]],[a[a.length-1]],[-1],[-1]);
     }
@@ -606,7 +618,6 @@ initImportCSV = () => {
             }
         }
         tempUpdCharts = ()=>{
-            const jsTimeMap = [...a['Device Time']];
             if ($('#plot_data').chosen().val()==null) {
                 killPlot();
             } else {
@@ -618,7 +629,7 @@ initImportCSV = () => {
                     doPlot("right");
                 }
                 //always update the chart trimmed range when plotting new data
-                const [b,c] = [jsTimeMap.length-$('#slider-range11').slider("values",1)-1,jsTimeMap.length-$('#slider-range11').slider("values",0)-1];
+                const [b,c] = [$('#slider-range11').slider("values",0),$('#slider-range11').slider("values",1)];
                 chartUpdRange(b,c);
                 $('#Summary-Container').empty();
                 $('#Summary-Container').append($('<div>',{class:'table-responsive'}).append($('<table>',{class:'table'}).append($('<thead>').append($('<tr>'))).append('<tbody>')));
